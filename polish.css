@@ -1,0 +1,421 @@
+/* ═══════════════════════════════════════════════════════════════
+   POLISH LAYER — Final Visual Polish Pass
+   Additive CSS only. No functional changes.
+   ═══════════════════════════════════════════════════════════════ */
+
+
+/* ─── POLISH: Smooth scroll globally ─────────────────────────── */
+html {
+    scroll-behavior: smooth;
+}
+
+
+/* ─── POLISH: Firefox scrollbar support ──────────────────────── */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(30, 144, 255, 0.3) transparent;
+}
+
+
+/* ─── POLISH: Scroll progress indicator ──────────────────────── */
+#polish-scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(90deg, #1e90ff, #00D6FF, #1e90ff);
+    background-size: 200% 100%;
+    z-index: 10000;
+    pointer-events: none;
+    transition: width 0.08s linear;
+    box-shadow: 0 0 8px rgba(0, 214, 255, 0.5), 0 0 20px rgba(0, 214, 255, 0.2);
+    animation: polish-progress-shimmer 3s linear infinite;
+}
+
+@keyframes polish-progress-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+
+/* ─── POLISH: Universal button active press ──────────────────── */
+button:active,
+.btn:active,
+.login-btn:active,
+.nav__cta:active,
+.ship-card__btn--primary:active,
+.ship-popover__btn:active,
+[role="button"]:active {
+    transform: scale(0.97) !important;
+    transition-duration: 0.1s !important;
+}
+
+
+/* ─── POLISH: CTA button shine sweep effect ──────────────────── */
+.btn--primary::after,
+.login-btn::after,
+.nav__cta::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.12),
+        transparent
+    );
+    transform: skewX(-20deg);
+    animation: polish-btn-shine 4s var(--ease-out-expo, ease) infinite;
+    pointer-events: none;
+    z-index: 3;
+}
+
+@keyframes polish-btn-shine {
+    0%   { left: -100%; }
+    20%  { left: 150%; }
+    100% { left: 150%; }
+}
+
+
+/* ─── POLISH: Nav link underline slide-in (enhanced) ─────────── */
+.topbar__nav-link {
+    position: relative;
+}
+
+.topbar__nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    width: 0;
+    height: 1.5px;
+    background: var(--gradient-accent, linear-gradient(135deg, #1e90ff, #00D6FF));
+    transition: width 0.35s var(--ease-out-expo, ease), left 0.35s var(--ease-out-expo, ease);
+    border-radius: 1px;
+}
+
+.topbar__nav-link:hover::after,
+.topbar__nav-link.active::after {
+    width: 100%;
+    left: 0;
+}
+
+
+/* ─── POLISH: Form input focus ring expansion ────────────────── */
+.form-input {
+    transition: border-color 0.3s ease,
+                box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.3s ease;
+}
+
+.form-input:focus {
+    border-color: var(--accent-blue, #1e90ff);
+    box-shadow:
+        0 0 0 3px rgba(30, 144, 255, 0.12),
+        0 0 0 6px rgba(30, 144, 255, 0.04),
+        0 0 24px rgba(30, 144, 255, 0.08);
+    background: rgba(10, 10, 12, 0.8);
+}
+
+
+/* ─── POLISH: Icon hover micro-interaction ───────────────────── */
+.feature-item__icon {
+    transition: transform 0.3s var(--ease-out-expo, ease),
+                background 0.3s ease,
+                border-color 0.3s ease;
+}
+
+.feature-item:hover .feature-item__icon {
+    transform: scale(1.08) rotate(-3deg);
+}
+
+.sailing-ship svg {
+    transition: transform 0.3s var(--ease-out-expo, ease);
+}
+
+.sailing-ship:hover svg {
+    transform: scale(1.05);
+}
+
+
+/* ─── POLISH: Card hover transition refinement ───────────────── */
+.card {
+    transition: transform 0.35s var(--ease-out-expo, ease),
+                box-shadow 0.35s var(--ease-out-expo, ease),
+                border-color 0.35s ease;
+    will-change: transform;
+}
+
+
+/* ─── POLISH: Status chips subtle glow ───────────────────────── */
+.status-chip {
+    transition: all 0.25s ease;
+}
+
+.status-chip:hover {
+    filter: brightness(1.15);
+}
+
+
+/* ─── POLISH: Enhanced glassmorphism card depth ──────────────── */
+.login-card,
+.ship-popover {
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+}
+
+
+/* ─── POLISH: Skeleton loading placeholder ───────────────────── */
+@keyframes polish-skeleton-pulse {
+    0%   { opacity: 0.06; }
+    50%  { opacity: 0.12; }
+    100% { opacity: 0.06; }
+}
+
+.card:empty::before,
+.card-content-wrapper:empty::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 120px;
+    background: linear-gradient(
+        110deg,
+        rgba(255,255,255,0.04) 25%,
+        rgba(255,255,255,0.08) 37%,
+        rgba(255,255,255,0.04) 63%
+    );
+    background-size: 200% 100%;
+    border-radius: 12px;
+    animation: polish-skeleton-sweep 1.8s ease-in-out infinite;
+}
+
+@keyframes polish-skeleton-sweep {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+
+/* ─── POLISH: Custom scrollbar width refinement ──────────────── */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(30, 144, 255, 0.25);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(30, 144, 255, 0.5);
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+
+/* ─── POLISH: Alert row hover micro-interaction ──────────────── */
+.alert-row {
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.alert-row:hover {
+    transform: translateX(4px);
+}
+
+
+/* ─── POLISH: Zone grid cell hover enhancement ───────────────── */
+.zone-cell {
+    transition: background 0.2s ease,
+                border-color 0.2s ease,
+                transform 0.15s ease;
+}
+
+.zone-cell:hover {
+    transform: scale(1.08);
+    z-index: 10;
+}
+
+
+/* ─── POLISH: Popover metric cards hover lift ────────────────── */
+.popover-metric {
+    transition: background 0.25s ease,
+                border-color 0.25s ease,
+                transform 0.25s var(--ease-out-expo, ease);
+}
+
+.popover-metric:hover {
+    transform: translateY(-2px);
+}
+
+
+/* ─── POLISH: GPU acceleration hints ─────────────────────────── */
+.sailing-ship,
+.login-bg-glow,
+.progress-bar__fill,
+#polish-scroll-progress,
+.card::before,
+.card::after {
+    will-change: transform, opacity;
+}
+
+
+/* ─── POLISH: Prevent layout shift on page load ──────────────── */
+.portal-layout {
+    min-height: 100vh;
+}
+
+.main-content {
+    min-height: calc(100vh - var(--topbar-height, 56px));
+}
+
+
+/* ─── POLISH: Mobile tap target sizing ───────────────────────── */
+@media (max-width: 768px) {
+    button,
+    .btn,
+    .nav__cta,
+    .nav__login,
+    .topbar__nav-link,
+    .zone-cell,
+    .sidebar__link {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Prevent horizontal overflow */
+    body {
+        overflow-x: hidden;
+    }
+
+    .main-content {
+        padding: 16px 12px;
+    }
+}
+
+
+/* ─── POLISH: Demo button styles (replaced inline from login.html) ── */
+.demo-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    color: var(--accent-cyan, #00D6FF);
+    font-family: var(--font-body, 'DM Sans', sans-serif);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.demo-btn--admin {
+    border: 1px solid rgba(30, 144, 255, 0.2);
+    background: rgba(30, 144, 255, 0.04);
+}
+
+.demo-btn--admin:hover {
+    background: rgba(30, 144, 255, 0.1);
+    border-color: var(--accent-blue, #1e90ff);
+    transform: translateY(-1px);
+}
+
+.demo-btn--operator {
+    border: 1px solid rgba(0, 214, 255, 0.2);
+    background: rgba(0, 214, 255, 0.04);
+}
+
+.demo-btn--operator:hover {
+    background: rgba(0, 214, 255, 0.1);
+    border-color: var(--accent-cyan, #00D6FF);
+    transform: translateY(-1px);
+}
+
+
+/* ─── POLISH: Keyboard focus-visible accessibility ring ──────── */
+body.polish-keyboard-nav *:focus {
+    outline: 2px solid var(--accent-cyan, #00D6FF);
+    outline-offset: 2px;
+}
+
+body:not(.polish-keyboard-nav) *:focus {
+    outline: none;
+}
+
+
+/* ─── POLISH: IntersectionObserver entrance class ────────────── */
+.polish-visible {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+
+/* ─── POLISH: Print-safe — hide decorative elements ──────────── */
+@media print {
+    #polish-scroll-progress,
+    .login-bg-glow,
+    .sailing-ship,
+    .background-map-svg,
+    .section-dots,
+    .progress-bar {
+        display: none !important;
+    }
+}
+
+
+/* ─── POLISH: Clean brand text logos (glowing & interactive) ─── */
+.login-logo-text {
+    display: block;
+    text-align: center;
+    margin-bottom: 24px;
+    font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+    font-size: 40px;
+    letter-spacing: 6px;
+    color: var(--text-heading, #fff);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.login-logo-text:hover {
+    color: var(--accent-cyan, #00D6FF);
+    text-shadow: 0 0 12px rgba(0, 214, 255, 0.5);
+    transform: scale(1.02);
+}
+
+.topbar-logo-text {
+    font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+    font-size: 24px;
+    letter-spacing: 4px;
+    color: var(--text-heading, #fff);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+    display: inline-block;
+}
+
+.topbar-logo-text:hover {
+    color: var(--accent-cyan, #00D6FF);
+    text-shadow: 0 0 10px rgba(0, 214, 255, 0.5);
+    transform: scale(1.02);
+}
+
+.nav__logo {
+    transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease !important;
+}
+
+.nav__logo:hover {
+    text-shadow: 0 0 10px rgba(0, 214, 255, 0.5);
+    transform: scale(1.02);
+}
+

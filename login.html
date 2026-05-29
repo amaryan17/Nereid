@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEREID — Login</title>
+    <meta name="description" content="Access the NEREID fleet management portal. Administrator and operator login.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="portal.css">
+    <link rel="stylesheet" href="polish.css">
+</head>
+<body>
+    <div class="login-page">
+        <!-- Ambient glow background -->
+        <div class="login-bg-glow login-bg-glow--blue"></div>
+        <div class="login-bg-glow login-bg-glow--cyan"></div>
+
+        <div class="login-card" id="login-card">
+            <a href="index.html" class="login-logo-text" title="Back to Home">NEREID</a>
+            <div class="login-card__role">
+                <div class="role-badge" id="role-badge">
+                    <span class="role-badge__dot"></span>
+                    <span id="role-label">ADMINISTRATOR ACCESS</span>
+                </div>
+            </div>
+
+            <form class="login-form" id="login-form" autocomplete="off">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="admin@nereid.ai" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter password" required>
+                </div>
+                <div class="login-error" id="login-error">
+                    Invalid credentials. Please check your email and password.
+                </div>
+                <button type="submit" class="login-btn" id="login-btn">Enter Portal →</button>
+
+                <!-- Quick Demo Login Buttons -->
+                <div class="demo-login-options" style="margin-top: 24px; text-align: center; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 18px;">
+                    <div style="font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; font-weight: 600;">Quick Demo Access</div>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button type="button" onclick="quickLogin('admin')" class="demo-btn demo-btn--admin">ADMIN DEMO</button>
+                        <button type="button" onclick="quickLogin('user')" class="demo-btn demo-btn--operator">OPERATOR DEMO</button>
+                    </div>
+                </div>
+            </form>
+
+            <a href="index.html" class="login-back" id="login-back">← Back to site</a>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+    (function() {
+        'use strict';
+
+        // Detect role from URL param
+        const params = new URLSearchParams(window.location.search);
+        const role = params.get('role') || 'admin';
+
+        const roleLabel = document.getElementById('role-label');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+
+        // Set role badge
+        if (role === 'user') {
+            roleLabel.textContent = 'OPERATOR ACCESS';
+            emailInput.placeholder = 'user@nereid.ai';
+        } else {
+            roleLabel.textContent = 'ADMINISTRATOR ACCESS';
+            emailInput.placeholder = 'admin@nereid.ai';
+        }
+
+        // Handle login
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            const creds = AUTH_CREDENTIALS[role];
+
+            if (email === creds.email && password === creds.password) {
+                // Success — redirect
+                loginError.classList.remove('visible');
+                emailInput.classList.remove('error');
+                passwordInput.classList.remove('error');
+
+                // Brief success flash
+                document.getElementById('login-btn').textContent = 'Authenticating...';
+                document.getElementById('login-btn').style.opacity = '0.7';
+
+                setTimeout(function() {
+                    window.location.href = creds.redirect;
+                }, 600);
+            } else {
+                // Error
+                loginError.classList.add('visible');
+                emailInput.classList.add('error');
+                passwordInput.classList.add('error');
+
+                // Remove error state after animation
+                setTimeout(function() {
+                    emailInput.classList.remove('error');
+                    passwordInput.classList.remove('error');
+                }, 600);
+            }
+        });
+
+        // Clear error on input
+        [emailInput, passwordInput].forEach(function(input) {
+            input.addEventListener('input', function() {
+                loginError.classList.remove('visible');
+            });
+        });
+
+        // Quick Demo access login helper
+        window.quickLogin = function(demoRole) {
+            const creds = AUTH_CREDENTIALS[demoRole];
+            emailInput.value = creds.email;
+            passwordInput.value = creds.password;
+
+            loginError.classList.remove('visible');
+            emailInput.classList.remove('error');
+            passwordInput.classList.remove('error');
+
+            document.getElementById('login-btn').textContent = 'Authenticating...';
+            document.getElementById('login-btn').style.opacity = '0.7';
+
+            setTimeout(function() {
+                window.location.href = creds.redirect;
+            }, 500);
+        };
+    })();
+    </script>
+    <script src="polish.js"></script>
+</body>
+</html>

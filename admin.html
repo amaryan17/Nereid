@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEREID — Admin Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="portal.css">
+    <link rel="stylesheet" href="polish.css">
+</head>
+<body>
+
+    <!-- ═══ Topbar Header ═══ -->
+    <header class="topbar">
+        
+        <!-- Logo -->
+        <a href="index.html" class="topbar-logo-text" title="Back to Home">NEREID</a>
+
+        <!-- Navigation Links -->
+        <nav class="topbar__nav">
+            <button class="sidebar__link active" data-view="fleet" onclick="switchView('fleet')">
+                <span class="sidebar__link-text">Fleet Overview</span>
+            </button>
+            <button class="sidebar__link" data-view="alerts" onclick="switchView('alerts')">
+                <span class="sidebar__link-text">Alerts</span>
+            </button>
+            <button class="sidebar__link" data-view="analytics" onclick="switchView('analytics')">
+                <span class="sidebar__link-text">Analytics</span>
+            </button>
+            <button class="sidebar__link" data-view="settings" onclick="switchView('settings')">
+                <span class="sidebar__link-text">Settings</span>
+            </button>
+        </nav>
+
+        <!-- Right Side Controls -->
+        <div class="topbar__right">
+            <button class="topbar__bell" id="topbar-bell" onclick="switchView('alerts')">
+                <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <span class="topbar__bell-badge" id="bell-badge">0</span>
+            </button>
+            <div class="topbar__user">
+                <div class="topbar__avatar">A</div>
+                <span class="topbar__user-label">ADMIN</span>
+            </div>
+            <!-- Logout Button -->
+            <a href="login.html" class="topbar__logout" title="Logout">
+                <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; vertical-align: middle;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- ═══ Main Content ═══ -->
+    <main class="main-content">
+        <div id="admin-content"></div>
+    </main>
+
+    <!-- Sailing Ships, High-Tech Map, and Holographic Globe Background Effect -->
+    <div class="sailing-background">
+        <!-- High-Tech Dotted/Vector World Map -->
+        <svg class="background-map-svg" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="grid-pattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(0, 214, 255, 0.015)" stroke-width="0.5"/>
+                    <circle cx="0" cy="0" r="0.8" fill="rgba(0, 214, 255, 0.05)"/>
+                </pattern>
+                <linearGradient id="map-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="rgba(30, 144, 255, 0.02)" />
+                    <stop offset="100%" stop-color="rgba(0, 214, 255, 0.05)" />
+                </linearGradient>
+            </defs>
+            
+            <!-- Background Grid -->
+            <rect width="1000" height="500" fill="url(#grid-pattern)" />
+            
+            <!-- Map Continents (Stylized Vector Paths) -->
+            <g fill="url(#map-grad)" stroke="rgba(0, 214, 255, 0.08)" stroke-width="0.8">
+                <!-- North America -->
+                <path d="M 80,120 C 100,100 130,90 160,90 C 200,90 220,110 250,100 C 270,95 290,110 320,110 C 340,110 360,130 350,160 C 345,175 320,185 300,195 C 280,205 270,225 260,250 C 255,260 248,260 245,250 C 245,235 250,215 240,205 C 230,195 210,195 195,190 C 180,185 170,195 155,185 C 145,175 140,150 120,150 C 100,150 90,140 80,120 Z" />
+                <!-- Greenland -->
+                <path d="M 330,60 C 350,50 380,45 390,55 C 400,65 385,85 375,95 C 365,105 340,100 330,90 C 320,80 320,70 330,60 Z" />
+                <!-- South America -->
+                <path d="M 260,255 C 275,265 290,285 300,310 C 315,345 320,380 295,430 C 290,440 282,440 280,430 C 275,395 255,365 245,340 C 235,315 230,290 245,270 C 250,260 255,250 260,255 Z" />
+                <!-- Africa -->
+                <path d="M 450,210 C 470,195 500,190 535,200 C 560,210 575,230 580,260 C 585,290 590,320 570,350 C 555,370 540,385 525,385 C 510,385 500,360 495,340 C 485,300 460,270 445,245 C 440,235 440,220 450,210 Z" />
+                <!-- Eurasia (Europe + Asia) -->
+                <path d="M 440,150 C 460,130 480,120 510,125 C 540,130 560,110 590,115 C 620,120 650,90 700,90 C 750,90 800,100 850,110 C 880,115 900,130 920,150 C 940,170 930,195 910,210 C 890,225 870,220 855,240 C 840,260 810,275 790,270 C 770,265 760,250 740,240 C 720,230 705,240 690,245 C 675,250 655,240 645,230 C 635,220 615,225 600,215 C 585,205 565,220 545,220 C 525,220 510,205 495,205 C 480,205 465,190 455,180 C 445,170 435,160 440,150 Z" />
+                <!-- Japan -->
+                <path d="M 890,140 C 895,145 900,155 895,165 C 890,175 885,185 880,180 C 875,175 880,155 890,140 Z" stroke-width="0.5" />
+                <!-- India / Indochina -->
+                <path d="M 690,220 C 700,230 710,245 715,255 C 720,265 715,270 710,265 C 705,260 700,245 690,235 Q 685,230 690,220 Z" />
+                <path d="M 740,235 C 745,245 755,255 760,265 C 765,275 755,280 750,270 C 745,260 735,250 735,240 Z" />
+                <!-- Indonesia / Philippines -->
+                <path d="M 760,275 C 770,270 785,275 795,285 C 800,295 780,310 770,305 C 760,300 750,285 760,275 Z" stroke-width="0.5" />
+                <path d="M 810,270 C 815,275 820,285 815,290 C 810,295 800,285 805,275 Z" stroke-width="0.5" />
+                <!-- Australia -->
+                <path d="M 780,330 C 810,320 840,320 860,335 C 880,350 890,370 880,390 C 870,410 845,415 825,410 C 805,405 790,390 780,380 C 770,370 765,345 780,330 Z" />
+                <!-- New Zealand -->
+                <path d="M 890,410 C 895,415 898,425 895,430 C 892,435 885,425 888,415 Z" stroke-width="0.5" />
+                <!-- United Kingdom & Ireland -->
+                <path d="M 450,110 C 455,105 460,115 455,125 C 450,135 442,125 448,115 Z" stroke-width="0.5" />
+                <!-- Madagascar -->
+                <path d="M 590,355 C 595,360 600,375 595,385 C 590,395 580,380 585,365 Z" stroke-width="0.5" />
+            </g>
+            
+            <!-- Pulse/Telemetry Nodes -->
+            <g class="map-nodes">
+                <circle cx="705" cy="245" r="3" fill="#00D6FF" class="node-pulse"/>
+                <circle cx="705" cy="245" r="7" fill="none" stroke="#00D6FF" stroke-width="0.5" class="node-ring"/>
+                <text x="715" y="249" fill="rgba(0, 214, 255, 0.4)" font-size="7" font-family="DM Sans" letter-spacing="1">ZONE_ALPHA</text>
+                
+                <circle cx="465" cy="115" r="2" fill="#1e90ff" class="node-pulse-slow"/>
+                <circle cx="465" cy="115" r="5" fill="none" stroke="#1e90ff" stroke-width="0.5" class="node-ring-slow"/>
+                <text x="473" y="119" fill="rgba(30, 144, 255, 0.3)" font-size="6" font-family="DM Sans" letter-spacing="1">STDBY_BETA</text>
+                
+                <circle cx="765" cy="285" r="2" fill="#00D6FF" class="node-pulse"/>
+                <circle cx="765" cy="285" r="5" fill="none" stroke="#00D6FF" stroke-width="0.5" class="node-ring"/>
+                
+                <circle cx="610" cy="205" r="2" fill="#1e90ff" class="node-pulse-slow"/>
+                
+                <circle cx="210" cy="170" r="2.5" fill="#1e90ff" class="node-pulse-slow"/>
+                <circle cx="210" cy="170" r="6" fill="none" stroke="#1e90ff" stroke-width="0.5" class="node-ring-slow"/>
+                <text x="218" y="174" fill="rgba(30, 144, 255, 0.3)" font-size="6" font-family="DM Sans" letter-spacing="1">HQ_WEST</text>
+            </g>
+
+            <!-- Telemetry Paths -->
+            <g stroke="rgba(0, 214, 255, 0.1)" stroke-width="0.6" fill="none" stroke-dasharray="3 3">
+                <path d="M 210,170 Q 450,80 705,245" />
+                <path d="M 465,115 Q 580,150 705,245" stroke="rgba(30, 144, 255, 0.08)" />
+                <path d="M 705,245 Q 760,300 825,410" />
+            </g>
+        </svg>
+
+        <!-- Floating, Multi-layered Holographic Spinning Globe -->
+
+        <!-- Ship 1 (Left to Right, Middle Depth) -->
+        <div class="sailing-ship sailing-ship--1" onclick="openShipPopover('NEREID-01')" title="NEREID-01 (Click to inspect)">
+            <svg viewBox="0 0 64 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                <path d="M6 16 L58 16 L54 8 L10 8 Z" fill="currentColor"/>
+                <rect x="20" y="4" width="8" height="4" fill="currentColor"/>
+                <rect x="36" y="2" width="6" height="6" fill="currentColor"/>
+            </svg>
+        </div>
+        <!-- Ship 2 (Right to Left, Background Depth) -->
+        <div class="sailing-ship sailing-ship--2" onclick="openShipPopover('NEREID-02')" title="NEREID-02 (Click to inspect)">
+            <svg viewBox="0 0 64 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                <path d="M6 16 L58 16 L54 8 L10 8 Z" fill="currentColor"/>
+                <rect x="18" y="5" width="12" height="3" fill="currentColor"/>
+                <rect x="38" y="3" width="8" height="5" fill="currentColor"/>
+            </svg>
+        </div>
+        <!-- Ship 3 (Left to Right, Foreground Depth) -->
+        <div class="sailing-ship sailing-ship--3" onclick="openShipPopover('NEREID-03')" title="NEREID-03 (Click to inspect)">
+            <svg viewBox="0 0 64 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                <path d="M6 16 L58 16 L54 8 L10 8 Z" fill="currentColor"/>
+                <rect x="24" y="3" width="16" height="5" fill="currentColor"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Ship Inspector Modal Backing -->
+    <div id="ship-popover-backdrop" class="ship-popover-backdrop" onclick="closeShipPopover()"></div>
+    
+    <!-- Ship Inspector Modal Card -->
+    <div id="ship-popover" class="ship-popover" style="display: none;">
+        <button class="ship-popover__close" onclick="closeShipPopover()">×</button>
+        <div class="ship-popover__header">
+            <h3 class="ship-popover__title">
+                <span class="ship-popover__icon">🚢</span>
+                <span id="popover-ship-id">NEREID-01</span>
+            </h3>
+            <span id="popover-ship-status" class="status-chip">ACTIVE</span>
+        </div>
+        <div class="ship-popover__divider"></div>
+        <div class="ship-popover__metrics">
+            <div class="popover-metric"><span class="popover-metric__icon">⚡</span><span>Solar: <strong id="popover-solar">--</strong> Wh</span></div>
+            <div class="popover-metric"><span class="popover-metric__icon">🔋</span><span>Battery: <strong id="popover-battery">--</strong>%</span></div>
+            <div class="popover-metric"><span class="popover-metric__icon">🦠</span><span>Microbe: <strong id="popover-microbe">--</strong>%</span></div>
+            <div class="popover-metric"><span class="popover-metric__icon">💧</span><span>Purified: <strong id="popover-purified">--</strong>L</span></div>
+            <div class="popover-metric"><span class="popover-metric__icon">🌤</span><span>Weather: <strong id="popover-weather">--</strong></span></div>
+            <div class="popover-metric"><span class="popover-metric__icon">📍</span><span>Coverage: <strong id="popover-coverage">--</strong>%</span></div>
+        </div>
+        <div class="ship-popover__divider"></div>
+        <div class="ship-popover__actions">
+            <a id="popover-dashboard-link" href="#" class="ship-popover__btn">OPEN COMMAND DASHBOARD →</a>
+        </div>
+    </div>
+
+    <!-- ═══ Scripts ═══ -->
+    <script src="data.js"></script>
+    <script src="alerts.js"></script>
+    <script src="admin.js"></script>
+    <script src="simulate.js"></script>
+
+    <!-- Parallax mouse tracking & Interactive popover scripts -->
+    <script>
+        // Parallax and Spotlight card mouse tracking
+        document.addEventListener('mousemove', function (e) {
+            const x = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
+            const y = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
+            document.documentElement.style.setProperty('--map-parallax-x', (x * -18) + 'px');
+            document.documentElement.style.setProperty('--map-parallax-y', (y * -18) + 'px');
+
+            document.querySelectorAll('.card, .ship-popover').forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', mouseX + 'px');
+                card.style.setProperty('--mouse-y', mouseY + 'px');
+            });
+        });
+
+        // Ship popover logic
+        let activePopoverShipId = null;
+
+        function openShipPopover(shipId) {
+            if (typeof window.setSelectedShip !== 'undefined') {
+                window.setSelectedShip(shipId);
+                
+                // Scroll the newly rendered card into view smoothly
+                setTimeout(() => {
+                    const card = document.getElementById(`card-${shipId}`);
+                    if (card) {
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        card.classList.add('card-highlight-pulse');
+                        setTimeout(() => {
+                            card.classList.remove('card-highlight-pulse');
+                        }, 2000);
+                    }
+                }, 150);
+            }
+        }
+
+        function closeShipPopover() {
+            activePopoverShipId = null;
+            const backdrop = document.getElementById('ship-popover-backdrop');
+            const popover = document.getElementById('ship-popover');
+            
+            backdrop.classList.remove('active');
+            popover.classList.remove('active');
+            
+            setTimeout(() => {
+                if (!activePopoverShipId) {
+                    backdrop.style.display = 'none';
+                    popover.style.display = 'none';
+                }
+            }, 300);
+        }
+
+        function updatePopoverData() {
+            if (!activePopoverShipId) return;
+            if (typeof getShipData === 'undefined') return;
+            const ship = getShipData(activePopoverShipId);
+            if (!ship) return;
+            
+            document.getElementById('popover-ship-id').textContent = ship.id;
+            
+            const statusEl = document.getElementById('popover-ship-status');
+            statusEl.className = `status-chip status-chip--${ship.status}`;
+            statusEl.innerHTML = `<span class="status-chip__dot"></span> ${ship.status.toUpperCase()}`;
+            
+            document.getElementById('popover-solar').textContent = ship.power.solarGenerated;
+            document.getElementById('popover-battery').textContent = ship.power.batteryPercent;
+            document.getElementById('popover-microbe').textContent = ship.bioremediation.microbeTankPercent;
+            document.getElementById('popover-purified').textContent = Math.round(ship.bioremediation.waterPurified);
+            document.getElementById('popover-weather').textContent = ship.weather.condition;
+            document.getElementById('popover-coverage').textContent = Math.round(ship.patrol.coveragePercent);
+            
+            document.getElementById('popover-dashboard-link').href = `dashboard.html?ship=${ship.id}`;
+        }
+
+        // Live simulation sync for inspector modal
+        window.addEventListener('nereid:update', function (e) {
+            if (activePopoverShipId && e.detail && e.detail.ship === activePopoverShipId) {
+                updatePopoverData();
+            }
+        });
+    </script>
+    <script src="polish.js"></script>
+</body>
+</html>

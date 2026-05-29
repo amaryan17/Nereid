@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEREID — AI-Powered Autonomous Oil Spill Detection & Bioremediation</title>
+    <meta name="description" content="NEREID is an AI-powered autonomous robot engineered for oil spill detection and bioremediation. Restoring our oceans through advanced environmental technology.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="polish.css">
+</head>
+<body>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- NAVIGATION                                  -->
+    <!-- ═══════════════════════════════════════════ -->
+    <nav id="main-nav" class="nav" aria-label="Main navigation">
+        <div class="nav__inner">
+            <a href="#" class="nav__logo" id="nav-logo">NEREID</a>
+            <div class="nav__links" id="nav-links">
+                <a href="#overview" class="nav__link" id="nav-overview">Overview</a>
+                <a href="#technology" class="nav__link" id="nav-technology">Technology</a>
+                <a href="#detection" class="nav__link" id="nav-detection">Detection Systems</a>
+                <a href="#bioremediation" class="nav__link" id="nav-bioremediation">Bioremediation</a>
+                <a href="#impact" class="nav__link" id="nav-impact">Impact</a>
+            </div>
+            <div class="nav__actions">
+                <a href="login.html?role=user" class="nav__login" id="nav-user-login">User Login</a>
+                <a href="login.html?role=admin" class="nav__cta" id="nav-admin-login">Admin Login →</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SCROLL-LINKED CANVAS                        -->
+    <!-- ═══════════════════════════════════════════ -->
+    <canvas id="hero-canvas"></canvas>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SCROLLABLE CONTENT OVERLAY SECTIONS         -->
+    <!-- ═══════════════════════════════════════════ -->
+    <main id="scroll-container">
+
+        <!-- SECTION 1: Hero / Overview (0–15% scroll) -->
+        <section class="scroll-section section-hero" id="overview" data-section="hero">
+            <div class="section__content section__content--center">
+                <h1 class="hero-title" id="hero-title">NEREID</h1>
+                <p class="hero-subtitle" id="hero-subtitle">Ocean guardian. AI-powered cleanup.</p>
+                <div class="hero-scroll-indicator" id="scroll-indicator">
+                    <span class="hero-scroll-indicator__text">Scroll to explore</span>
+                    <div class="hero-scroll-indicator__line"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Technology / Detection (15–40% scroll) -->
+        <section class="scroll-section section-technology" id="technology" data-section="technology">
+            <div class="section__content section__content--left">
+                <div class="section__label" id="tech-label">
+                    <span class="section__label-line"></span>
+                    01 — Technology
+                </div>
+                <h2 class="section__heading" id="tech-heading">Engineering for<br>environmental<br>restoration.</h2>
+                <div class="section__features" id="tech-features">
+                    <div class="feature-item" id="feature-detection">
+                        <div class="feature-item__icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10"/>
+                                <circle cx="12" cy="12" r="6"/>
+                                <circle cx="12" cy="12" r="2"/>
+                            </svg>
+                        </div>
+                        <div class="feature-item__text">
+                            <h3>Autonomous Detection</h3>
+                            <p>AI-driven spill identification with 99.7% accuracy across vast ocean territories.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item" id="feature-sensors">
+                        <div class="feature-item__icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M2 12h4l3-9 6 18 3-9h4"/>
+                            </svg>
+                        </div>
+                        <div class="feature-item__text">
+                            <h3>Advanced Sensor Arrays</h3>
+                            <p>Multi-spectral imaging, LiDAR, and chemical sensors working in concert.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item" id="feature-ai">
+                        <div class="feature-item__icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="4" y="4" width="16" height="16" rx="2"/>
+                                <path d="M9 9h6v6H9z"/>
+                                <path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/>
+                            </svg>
+                        </div>
+                        <div class="feature-item__text">
+                            <h3>Real-Time AI Processing</h3>
+                            <p>Edge computing with neural networks for instant threat assessment.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Bioremediation (40–65% scroll) -->
+        <section class="scroll-section section-bioremediation" id="detection" data-section="bioremediation">
+            <div class="section__content section__content--right">
+                <div class="section__label" id="bio-label">
+                    <span class="section__label-line"></span>
+                    02 — Bioremediation
+                </div>
+                <h2 class="section__heading" id="bio-heading">Bioremediation<br>redefined.</h2>
+                <div class="section__features" id="bio-features">
+                    <div class="feature-item" id="feature-microbes">
+                        <div class="feature-item__icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                            </svg>
+                        </div>
+                        <div class="feature-item__text">
+                            <h3>Native Oil-Degrading Microbes</h3>
+                            <p>Engineered microbial consortia that break down hydrocarbons into harmless compounds.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item" id="feature-precision">
+                        <div class="feature-item__icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <path d="M2 17l10 5 10-5"/>
+                                <path d="M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <div class="feature-item__text">
+                            <h3>Precision Deployment Algorithms</h3>
+                            <p>AI calculates optimal dispersal patterns for maximum bioremediation efficiency.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item" id="feature-molecular">
+                        <div class="feature-item__icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="8" cy="8" r="3"/>
+                                <circle cx="16" cy="16" r="3"/>
+                                <circle cx="16" cy="8" r="2"/>
+                                <line x1="10.5" y1="9.5" x2="13.5" y2="14.5"/>
+                                <line x1="13.5" y1="8" x2="10.5" y2="8"/>
+                            </svg>
+                        </div>
+                        <div class="feature-item__text">
+                            <h3>Molecular-Level Cleanup</h3>
+                            <p>Targeting pollutants at the molecular level for complete environmental restoration.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Environmental Intelligence (65–85% scroll) -->
+        <section class="scroll-section section-intelligence" id="bioremediation" data-section="intelligence">
+            <div class="section__content section__content--left">
+                <div class="section__label" id="intel-label">
+                    <span class="section__label-line"></span>
+                    03 — Intelligence
+                </div>
+                <h2 class="section__heading" id="intel-heading">Continuous<br>environmental<br>intelligence.</h2>
+                <div class="section__stats" id="intel-stats">
+                    <div class="stat-item" id="stat-water">
+                        <div class="stat-item__value" data-count="24">24/7</div>
+                        <div class="stat-item__label">Operational Capability</div>
+                    </div>
+                    <div class="stat-item" id="stat-eco">
+                        <div class="stat-item__value">99.7%</div>
+                        <div class="stat-item__label">Detection Accuracy</div>
+                    </div>
+                    <div class="stat-item" id="stat-cloud">
+                        <div class="stat-item__value">360°</div>
+                        <div class="stat-item__label">Sensor Coverage</div>
+                    </div>
+                </div>
+                <div class="section__features section__features--compact" id="intel-features">
+                    <div class="feature-chip" id="chip-water">
+                        <span class="feature-chip__dot"></span>
+                        Real-time water quality tracking
+                    </div>
+                    <div class="feature-chip" id="chip-eco">
+                        <span class="feature-chip__dot"></span>
+                        Ecosystem recovery monitoring
+                    </div>
+                    <div class="feature-chip" id="chip-ops">
+                        <span class="feature-chip__dot"></span>
+                        24/7 operational capability
+                    </div>
+                    <div class="feature-chip" id="chip-predict">
+                        <span class="feature-chip__dot"></span>
+                        Predictive environmental analytics
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: CTA / Final (85–100% scroll) -->
+        <section class="scroll-section section-cta" id="impact" data-section="cta">
+            <div class="section__content section__content--center">
+                <h2 class="cta-title" id="cta-title">Restore our oceans.<br>Protect our future.</h2>
+                <p class="cta-subtitle" id="cta-subtitle">NEREID. Engineered for environmental restoration,<br>deployed for ocean recovery.</p>
+                <div class="cta-buttons" id="cta-buttons">
+                    <a href="login.html?role=admin" class="btn btn--primary" id="cta-admin">
+                        <span>Admin Portal</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                    <a href="login.html?role=user" class="btn btn--secondary" id="cta-user">User Portal →</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- PROGRESS BAR                                -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="progress-bar" id="progress-bar">
+        <div class="progress-bar__fill" id="progress-fill"></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SECTION INDICATORS (right side dots)        -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="section-dots" id="section-dots">
+        <button class="section-dot active" data-target="overview" id="dot-overview" aria-label="Go to Overview">
+            <span class="section-dot__label">Overview</span>
+        </button>
+        <button class="section-dot" data-target="technology" id="dot-technology" aria-label="Go to Technology">
+            <span class="section-dot__label">Technology</span>
+        </button>
+        <button class="section-dot" data-target="detection" id="dot-detection" aria-label="Go to Detection">
+            <span class="section-dot__label">Detection</span>
+        </button>
+        <button class="section-dot" data-target="bioremediation" id="dot-bioremediation" aria-label="Go to Bioremediation">
+            <span class="section-dot__label">Bioremediation</span>
+        </button>
+        <button class="section-dot" data-target="impact" id="dot-impact" aria-label="Go to Impact">
+            <span class="section-dot__label">Impact</span>
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="polish.js"></script>
+</body>
+</html>
