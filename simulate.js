@@ -1,4 +1,4 @@
-﻿/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════
    NEREID — Real-Time Data Simulation Engine (simulate.js)
    Self-running interval-based simulation with multi-ship profiles.
    Mutates FLEET data in-memory and dispatches 'nereid:update' event.
@@ -135,8 +135,8 @@ const NereidSimulation = (function () {
             const p = ship.power;
 
             // 1. Advance solar clock
-            // 2s tick at 1x speed. Cycle 24 hours in 240 ticks (8 mins).
-            sim.currentHour = (sim.currentHour + 0.1) % 24;
+            // Slowed clock advance for realistic tracking pacing
+            sim.currentHour = (sim.currentHour + 0.015) % 24;
 
             // 2. Solar Generation (sine curve + noise)
             const basePeak = 850;
@@ -182,14 +182,14 @@ const NereidSimulation = (function () {
                 let batteryPercent = p.batteryPercent;
 
                 if (diff > 0) {
-                    batteryPercent += 0.1; // charges at +0.1%
+                    batteryPercent += 0.02; // charges slowly
                 } else {
-                    batteryPercent -= 0.3; // drains at -0.3%
+                    batteryPercent -= 0.05; // drains slowly
                 }
 
-                // NEREID-02 special profile: starts at 35% and solar declining, drain faster
+                // NEREID-02 special profile: starts at 35% and solar declining, realistic drain
                 if (shipId === "NEREID-02" && p.alertTier === 2) {
-                    batteryPercent -= 1.0; // fast drain for demonstration
+                    batteryPercent -= 0.15; // realistic drain rate
                 }
 
                 p.batteryPercent = Math.min(100, Math.max(0, parseFloat(batteryPercent.toFixed(1))));
@@ -264,9 +264,8 @@ const NereidSimulation = (function () {
             }
 
             // ── C. Microbe Tank (only active non-docked) ──
-            if (shipId !== "NEREID-04" && ship.status === "active" && !pat.isPaused) {
-                // Drain by 0.05% per tick
-                bio.microbeTankPercent = Math.max(0, parseFloat((bio.microbeTankPercent - 0.05).toFixed(2)));
+                // Drain slowly by 0.01% per tick
+                bio.microbeTankPercent = Math.max(0, parseFloat((bio.microbeTankPercent - 0.01).toFixed(2)));
                 bio.microbeTankLiters = Math.max(0, parseFloat((bio.microbeTankPercent / 100 * bio.microbeTankTotal).toFixed(2)));
                 changed.push("bioremediation");
 
@@ -303,10 +302,9 @@ const NereidSimulation = (function () {
                 }
             }
 
-            // ── D. Water Processing (only active non-docked) ──
             if (shipId !== "NEREID-04" && ship.status === "active" && !pat.isPaused) {
-                const intakeInc = Math.floor(Math.random() * 8) + 8; // 8-15 L
-                let efficiency = bio.purificationEfficiency + (Math.random() * 2 - 1);
+                const intakeInc = Math.floor(Math.random() * 2) + 1; // Realistic 1-3 L flow
+                let efficiency = bio.purificationEfficiency + (Math.random() * 0.4 - 0.2);
                 efficiency = Math.min(72, Math.max(58, efficiency));
                 bio.purificationEfficiency = parseFloat(efficiency.toFixed(1));
 
@@ -489,9 +487,9 @@ const NereidSimulation = (function () {
     /* ─── Start / Timer Control ────────────────────────────── */
     function start() {
         stop();
-        _intervals.fast = setInterval(_tickFast, 2000 / _multiplier);
-        _intervals.medium = setInterval(_tickMedium, 10000 / _multiplier);
-        _intervals.slow = setInterval(_tickSlow, 60000 / _multiplier);
+        _intervals.fast = setInterval(_tickFast, 25000 / _multiplier);
+        _intervals.medium = setInterval(_tickMedium, 120000 / _multiplier);
+        _intervals.slow = setInterval(_tickSlow, 480000 / _multiplier);
 
         // Render debug panel
         _renderDebugPanel();
@@ -727,11 +725,11 @@ const NereidSimulation = (function () {
                 </div>
 
                 <div>
-                    <div class="sim-debug-section-title">Speed Multiplier</div>
+                    <div class="sim-debug-section-title">Speed Multiplier (Calm Tracking)</div>
                     <div class="sim-speed-btn-group">
                         <button class="sim-speed-choice active" data-speed="1">1×</button>
+                        <button class="sim-speed-choice" data-speed="2">2×</button>
                         <button class="sim-speed-choice" data-speed="5">5×</button>
-                        <button class="sim-speed-choice" data-speed="10">10×</button>
                     </div>
                 </div>
 

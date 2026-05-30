@@ -1,4 +1,4 @@
-﻿/* ═══════════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════════
    NEREID — Admin Portal Controller
    Manages Fleet Overview + Alerts views, sidebar navigation,
    bell badge, and live-update integration via AlertManager.
@@ -119,8 +119,11 @@
         /* Severity sort weight: lower = higher priority */
         const severityWeight = { critical: 0, warning: 1, info: 2 };
 
-        /* Create a shallow copy so we don't mutate the original order */
-        const sorted = [...GLOBAL_ALERTS].sort((a, b) => {
+        /* Filter for unacknowledged alerts only */
+        const activeAlerts = GLOBAL_ALERTS.filter(alert => !alert.acknowledged);
+
+        /* Create a sorted copy of unacknowledged alerts */
+        const sorted = activeAlerts.sort((a, b) => {
             const sA = severityWeight[a.severity] ?? 3;
             const sB = severityWeight[b.severity] ?? 3;
             if (sA !== sB) return sA - sB;

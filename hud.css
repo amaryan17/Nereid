@@ -1,0 +1,460 @@
+/* ═══════════════════════════════════════════════════════════════
+   NEREID FLEET COMMAND — CYBERPUNK HUD OVERHAUL
+   ═══════════════════════════════════════════════════════════════
+   Loaded AFTER portal.css and polish.css to override base styles.
+   Provides full HUD chrome: scanlines, vignette, boot sequence,
+   top/bottom status bars, radar animations, telemetry paths,
+   vessel trails, glitch effects, and floating zone readouts.
+   ═══════════════════════════════════════════════════════════════ */
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §18  GOOGLE FONT IMPORT
+   Must appear before any rule that references the font family.
+   ═══════════════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §1  DESIGN TOKENS / CSS VARIABLES
+   Central palette and typography tokens consumed throughout
+   the HUD layer.  Override these on :root to re-theme.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+    --hud-primary: #00F0FF;
+    --hud-secondary: #00C9B1;
+    --hud-alert: #FFB300;
+    --hud-danger: #FF3D3D;
+    --hud-positive: #00FF88;
+    --hud-text: #B0E8F0;
+    --hud-text-dim: rgba(176, 232, 240, 0.5);
+    --hud-panel-bg: rgba(0, 20, 35, 0.75);
+    --hud-panel-border: rgba(0, 240, 255, 0.25);
+    --hud-panel-glow: rgba(0, 240, 255, 0.15);
+    --hud-font: 'Share Tech Mono', 'Space Mono', 'Courier New', monospace;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §2  BACKGROUND OVERRIDE
+   Deep-ocean radial gradient replacing default body background.
+   Sets global font, text colour, and tactical crosshair cursor.
+   ═══════════════════════════════════════════════════════════════ */
+body {
+    background: radial-gradient(ellipse at center, #050D12 0%, #000000 70%);
+    font-family: var(--hud-font);
+    color: var(--hud-text);
+    cursor: crosshair;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §3  CRT SCANLINE OVERLAY
+   Repeating horizontal lines that drift vertically to simulate
+   an old CRT monitor.  Fully non-interactive (pointer-events: none).
+   ═══════════════════════════════════════════════════════════════ */
+.hud-scanlines {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.03) 2px,
+        rgba(0, 0, 0, 0.03) 4px
+    );
+    animation: scanlineDrift 40s linear infinite;
+}
+
+/* Slow vertical shift of the scanline pattern */
+@keyframes scanlineDrift {
+    0%   { background-position-y: 0; }
+    100% { background-position-y: 4px; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §4  VIGNETTE OVERLAY
+   Darkened edges draw the operator's eye toward the centre of
+   the tactical display.
+   ═══════════════════════════════════════════════════════════════ */
+.hud-vignette {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+    background: radial-gradient(
+        ellipse at center,
+        transparent 50%,
+        rgba(0, 0, 0, 0.6) 100%
+    );
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §5  BOOT SEQUENCE OVERLAY
+   Full-screen black overlay that fades out after a 2-second
+   "boot" delay, revealing the HUD beneath.  The inner text
+   flickers rapidly to mimic CRT phosphor warm-up.
+   ═══════════════════════════════════════════════════════════════ */
+.hud-boot-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Hold fully opaque for 2 s, then fade out over 0.5 s */
+    animation: bootFadeOut 0.5s 2s forwards;
+}
+
+/* Fade-out + hide so the overlay doesn't block interaction */
+@keyframes bootFadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+/* Three rapid opacity pulses simulating phosphor flicker */
+@keyframes bootTextFlicker {
+    0%   { opacity: 1; }
+    16%  { opacity: 0.3; }
+    33%  { opacity: 1; }
+    50%  { opacity: 0.3; }
+    66%  { opacity: 1; }
+    83%  { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+
+/* The typed-out boot message */
+.boot-text {
+    text-align: center;
+    font-family: var(--hud-font);
+    color: var(--hud-primary);
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    white-space: pre-line;
+    animation: bootTextFlicker 0.6s ease-in-out 3;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §6  HUD TOP BAR
+   Glassmorphic status strip pinned to the top of the viewport.
+   Contains status items, a live-indicator dot, and a scrolling
+   intelligence ticker.
+   ═══════════════════════════════════════════════════════════════ */
+.hud-top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    height: 36px;
+    background: var(--hud-panel-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--hud-panel-border);
+    box-shadow: 0 0 20px var(--hud-panel-glow);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font: 10px var(--hud-font);
+    color: var(--hud-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Individual status readout inside the top bar */
+.hud-top-bar__item {
+    padding: 0 12px;
+    border-right: 1px solid rgba(0, 240, 255, 0.1);
+}
+
+/* Live-status indicator with pulsing green dot */
+.hud-top-bar__live {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.hud-top-bar__live::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--hud-positive);
+    animation: liveDotPulse 3.5s ease-in-out infinite;
+}
+
+/* Pulsing glow for the live-status dot */
+@keyframes liveDotPulse {
+    0%, 100% { opacity: 1;   box-shadow: 0 0 4px var(--hud-positive); }
+    50%      { opacity: 0.4; box-shadow: 0 0 0px var(--hud-positive); }
+}
+
+/* Horizontally-scrolling intelligence ticker */
+.hud-top-bar__ticker {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.hud-top-bar__ticker span {
+    display: inline-block;
+}
+
+@keyframes tickerScroll {
+    0%   { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §7  HUD BOTTOM STATUS BAR
+   Glassmorphic metric strip pinned to the bottom of the viewport.
+   Displays key fleet readouts (speed, fuel, threat level, etc.).
+   ═══════════════════════════════════════════════════════════════ */
+.hud-bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    height: 52px;
+    background: var(--hud-panel-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--hud-panel-border);
+    box-shadow: 0 0 20px var(--hud-panel-glow);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+/* Single metric block (value + label) */
+.hud-metric-readout {
+    text-align: center;
+}
+
+.hud-metric-readout__value {
+    font-size: 18px;
+    color: var(--hud-primary);
+    font-weight: bold;
+    font-family: var(--hud-font);
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.5),
+                 0 0 16px rgba(0, 240, 255, 0.2);
+}
+
+.hud-metric-readout__label {
+    font-size: 8px;
+    color: var(--hud-text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §8  RADAR SWEEP ANIMATIONS
+   Expanding-ring radar pulse applied to SVG <circle> elements
+   inside ops-zone overlays.  A second class provides a half-
+   cycle delay so two rings stagger naturally.
+   ═══════════════════════════════════════════════════════════════ */
+@keyframes radarSweep {
+    0%   { r: 3;  opacity: 1; stroke-width: 2; }
+    100% { r: 45; opacity: 0; stroke-width: 0.3; }
+}
+
+.radar-sweep-ring {
+    fill: none;
+    stroke: var(--hud-primary);
+    animation: radarSweep 12s ease-out infinite;
+}
+
+/* Staggered second ring for a continuous sweep effect */
+.radar-sweep-ring--delayed {
+    animation-delay: 6s;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §9  ANIMATED DASH FLOW FOR TELEMETRY PATHS
+   Dashed SVG paths that "flow" toward their destination,
+   indicating live data streams or ship telemetry feeds.
+   ═══════════════════════════════════════════════════════════════ */
+@keyframes dashFlow {
+    to { stroke-dashoffset: -20; }
+}
+
+.telemetry-path-animated {
+    stroke-dasharray: 6 4;
+    animation: dashFlow 24s linear infinite;
+}
+
+/* Return-leg path rendered in alert colour at reduced opacity */
+.telemetry-path-return {
+    stroke: var(--hud-alert);
+    opacity: 0.4;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §10  VESSEL MOTION TRAIL
+   Afterimage echoes positioned behind a moving vessel sprite.
+   Each successive echo is more transparent and slightly offset.
+   Also includes a rotating radar-dish decoration.
+   ═══════════════════════════════════════════════════════════════ */
+.vessel-trail {
+    position: absolute;
+    pointer-events: none;
+}
+
+/* Progressive opacity fade for trailing echoes */
+.vessel-trail--1 {
+    opacity: 0.2;
+    transform: translate(-6px, 0);
+}
+
+.vessel-trail--2 {
+    opacity: 0.12;
+    transform: translate(-12px, 0);
+}
+
+.vessel-trail--3 {
+    opacity: 0.06;
+    transform: translate(-18px, 0);
+}
+
+/* Continuously rotating miniature radar dish on vessel */
+.vessel-radar-dish {
+    width: 8px;
+    height: 8px;
+    animation: radarDishSpin 15s linear infinite;
+}
+
+@keyframes radarDishSpin {
+    to { transform: rotate(360deg); }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §11  DATA GLITCH ANIMATION
+   Brief staccato opacity flicker applied to values that just
+   changed, simulating a noisy data-link update.
+   ═══════════════════════════════════════════════════════════════ */
+@keyframes dataGlitch {
+    0%, 100% { opacity: 1; }
+    25%      { opacity: 0.3; }
+    50%      { opacity: 1; }
+    75%      { opacity: 0.4; }
+}
+
+.data-glitch {
+    animation: dataGlitch 0.15s ease-in-out;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §12  BIOLUMINESCENT PARTICLE CANVAS
+   Full-viewport <canvas> sitting behind all HUD elements.
+   JS will paint floating bioluminescent particles here.
+   ═══════════════════════════════════════════════════════════════ */
+#particle-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §13  ENHANCED TOPBAR OVERRIDE
+   Push the existing application topbar below the fixed HUD
+   top bar so they don't overlap.
+   ═══════════════════════════════════════════════════════════════ */
+.topbar {
+    margin-top: 36px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §14  ENHANCED HOVER STATES
+   All interactive map elements get a tactical crosshair cursor
+   and a cyan drop-shadow glow on hover for clear affordance.
+   ═══════════════════════════════════════════════════════════════ */
+.sailing-ship:hover,
+.map-radar-node:hover {
+    filter: drop-shadow(0 0 12px rgba(0, 240, 255, 0.6));
+    cursor: crosshair;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §15  MAIN CONTENT AREA ADJUSTMENT
+   Extra bottom padding so content is not hidden behind the
+   fixed HUD bottom status bar.
+   ═══════════════════════════════════════════════════════════════ */
+.main-content {
+    margin-top: calc(var(--topbar-height, 72px) + 36px) !important;
+    padding-bottom: 72px !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §16  MUMBAI BASE ENHANCED STYLES
+   Pulsing ring animation radiating outward from the home-port
+   marker to draw attention on the tactical map.
+   ═══════════════════════════════════════════════════════════════ */
+@keyframes basePulse {
+    0%   { r: 8;  opacity: 0.8; }
+    100% { r: 25; opacity: 0; }
+}
+
+.base-marker-pulse,
+.base-pulse-ring {
+    fill: none;
+    stroke: var(--hud-positive);
+    stroke-width: 1;
+    animation: basePulse 8s ease-out infinite;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   §17  ZONE DATA READOUT PANELS
+   Floating glassmorphic info-cards positioned near ops-zone
+   nodes on the SVG map.  Hidden by default; revealed on hover
+   or when the `.visible` class is applied via JS.
+   ═══════════════════════════════════════════════════════════════ */
+.zone-readout {
+    position: absolute;
+    pointer-events: none;
+    background: var(--hud-panel-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--hud-panel-border);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font: 9px var(--hud-font);
+    color: var(--hud-text);
+    letter-spacing: 1px;
+    line-height: 1.6;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    box-shadow: 0 0 12px var(--hud-panel-glow);
+}
+
+/* Reveal readout on radar-node hover or explicit visibility toggle */
+.map-radar-node:hover + .zone-readout,
+.zone-readout.visible {
+    opacity: 1;
+}
